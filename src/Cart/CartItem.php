@@ -4,6 +4,7 @@ namespace Cart;
 
 use ArrayAccess;
 use InvalidArgumentException;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
  * @property string $id
@@ -262,7 +263,7 @@ class CartItem implements ArrayAccess, Arrayable
     }
 
     /**
-     * Get a piece of data set on the cart item. Use custom getter if exists.
+     * Get a piece of data set on the cart item.
      *
      * @param string $key
      *
@@ -270,18 +271,30 @@ class CartItem implements ArrayAccess, Arrayable
      */
     public function __get($key)
     {
+        $getter = 'get' . Inflector::classify($key);
+
+        if (method_exists($this, $getter)) {
+            return call_user_func(array($this, $getter));
+        }
+
         return $this->get($key);
     }
 
     /**
-     * Set a piece of data on the cart item.
+     * Set a piece of data on the cart item. Use custom setter if exists.
      *
      * @param string $key
      * @param mixed  $value
      */
     public function __set($key, $value)
     {
-        $this->set($key, $value);
+        $setter = 'set' . Inflector::classify($key);
+
+        if (method_exists($this, $setter)) {
+            return call_user_func_array(array($this, $setter), array($value));
+        } else {
+            $this->set($key, $value);
+        }
     }
 
     /**

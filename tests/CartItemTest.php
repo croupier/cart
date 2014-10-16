@@ -211,4 +211,46 @@ class CartItemTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(5.00, $tax);
         $this->assertTrue(is_float($tax));
     }
+
+    public function testItCanHaveACustomGetterForAProperty()
+    {
+        $item = new CartItemWithCustomSkuGetter;
+
+        $sku = '123';
+
+        $item->sku = $sku;
+
+        $this->assertEquals(CartItemWithCustomSkuGetter::SKU_PREFIX . $sku, $item->sku);
+    }
+
+    public function testItCanHaveACustomSetterForAProperty()
+    {
+        $item = new CartItemWithCustomSkuSetter;
+
+        $sku = '123';
+
+        $item->sku = $sku;
+
+        $this->assertEquals(CartItemWithCustomSkuSetter::SKU_PREFIX . $sku, $item->sku);
+    }
+}
+
+class CartItemWithCustomSkuGetter extends CartItem
+{
+    const SKU_PREFIX = 'TEST';
+
+    public function getSku()
+    {
+        return self::SKU_PREFIX . $this->get('sku');
+    }
+}
+
+class CartItemWithCustomSkuSetter extends CartItem
+{
+    const SKU_PREFIX = 'TEST';
+
+    public function setSku($sku)
+    {
+        $this->set('sku', self::SKU_PREFIX . $sku);
+    }
 }

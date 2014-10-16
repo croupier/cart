@@ -319,7 +319,7 @@ You can also override this method in a subclass if you have need to change what 
 
 #### Cart Item Methods
 
-#### get
+##### get
 
 Get a piece of data set on the cart item.
 
@@ -337,7 +337,34 @@ $name = $item['name'];
 $name = $item->name;
 ```
 
-#### set
+You can also define a custom getter for a cart item property on a subclass.
+
+```php
+use Cart\CartItem;
+
+class MyCartItem extends CartItem
+{
+    const SKU_PREFIX = 'ABC_';
+
+    public function getSku()
+    {
+        return self::SKU_PREFIX . $this->get('sku');
+    }
+}
+
+$item = new MyCartItem;
+$item->sku = 123;
+
+$sku = $item->getSku(); // will return ABC_123 instead of 123
+```
+
+The custom getter will only be used when accessing a property using array access (`$item['sku']`) or direct access (`$item->sku`). Alternatively the the custom getter can be called directly.
+
+`CartItem::get()` will not use the custom getter. This will always return the original value of the property.
+
+Inside the custom getter `CartItem::get()` should be used to retrieve a cart item property.
+
+##### set
 
 Set a piece of data on the cart item.
 
@@ -372,6 +399,29 @@ $item->price = '10' // ok
 
 $item->price = 'ten' // will throw exception
 ```
+
+You can also define a custom setter for a cart item property on a subclass.
+
+```php
+use Cart\CartItem;
+
+class MyCartItem extends CartItem
+{
+    const SKU_PREFIX = 'ABC_';
+
+    public function setSku($sku)
+    {
+       $this->set('sku', self::SKU_PREFIX . $sku);
+    }
+}
+
+$item = new MyCartItem;
+$item->sku = 123;
+
+$sku = $item->getSku(); // will return ABC_123 instead of 123
+```
+
+The custom setter will only be used when setting a property using array access (`$item['sku'] = '123'`) or direct access (`$item->sku = '123'`). Alternatively the the custom setter can be called directly.
 
 ##### getTotalPrice
 
