@@ -47,18 +47,27 @@ class CartItem implements ArrayAccess, Arrayable
      */
     public function getId()
     {
-        // keys to ignore in the hashing process
-        $ignoreKeys = array('quantity');
-
-        // data to use for the hashing process
         $hashData = $this->data;
-        foreach ($ignoreKeys as $key) {
+
+        foreach ($this->getOmittedHashProperties() as $key) {
             unset($hashData[$key]);
         }
 
         $hash = sha1(serialize($hashData));
 
         return $hash;
+    }
+
+    /**
+     * Get the cart item properties to ignore during the hashing process.
+     *
+     * @return array
+     */
+    public function getOmittedHashProperties()
+    {
+        return array(
+            'quantity'
+        );
     }
 
     /**
@@ -253,7 +262,7 @@ class CartItem implements ArrayAccess, Arrayable
     }
 
     /**
-     * Get a piece of data set on the cart item.
+     * Get a piece of data set on the cart item. Use custom getter if exists.
      *
      * @param string $key
      *

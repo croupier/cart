@@ -307,6 +307,16 @@ $id = $item['id'];
 
 **Changing a property on the cart item will change its ID.**
 
+Cart item properties can be ommitted from the cart item id generation process. By default `quantity` is the only property that is ommitted - this means that 2 of the same items, that only vary by quantity, will still be treated as the same item (this is how the cart knows whether to add a new item or update the quantity of an existing one).
+
+You can see what properties are omitted by using the `getOmittedHashProperties` method.
+
+```php
+$omittedProperties = $item->getOmittedHashProperties();
+```
+
+You can also override this method in a subclass if you have need to change what properties are omitted.
+
 #### Cart Item Methods
 
 #### get
