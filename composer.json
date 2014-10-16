@@ -12,7 +12,11 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
-        "mockery/mockery": "0.8.0"
+        "mockery/mockery": "0.9.*",
+        "phpunit/phpunit": "4.3.*"
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": {
